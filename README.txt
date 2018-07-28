@@ -1,0 +1,9 @@
+使用Java自带的ImageIO解析图片
+第一步：
+使用getImageReadersBySuffix方法可读取文件中包含的全部图片；
+若为动态GIF可读出所有图片，若为静态，则读出一张。
+第二步：
+读出图片为BufferedImage类，其中包含了14种通道格式；
+使用BufferedImage.getType()获得。
+第三步：
+根据通道格式，使用不同的方法解析，得到最终的RGB以及Alpha值。
