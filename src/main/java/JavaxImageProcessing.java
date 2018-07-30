@@ -41,8 +41,6 @@ public class JavaxImageProcessing {
         }
     }
 
-
-
     /**
      * 图片解析测试，不包含图片的读取时间
      * JPG,30K,990*300pixel,三通道,1000 loop,12.1ms/张
@@ -53,15 +51,15 @@ public class JavaxImageProcessing {
      * PNG,27K,1294*295pixel,四通道,10000 loop,16.6ms/张
      * PNG,27K,1294*295pixel,四通道,100000 loop,16.6ms/张
      *
-     * BMP,30K,109*96pixel,三通道,1000 loop,1.1ms/张
+     * BMP,30K,109*96pixel,三通道,1000 loop,1.0ms/张
      * BMP,30K,109*96pixel,三通道,10000 loop,0.8ms/张
      * BMP,30K,109*96pixel,三通道,100000 loop,0.9ms/张
      */
     @Test
     public void getImageRGB() {
-        File file = bmp;
-        String format = "BMP";
-        int loopNum = 100000;
+        File file = gif;
+        String format = "GIF";
+        int loopNum = 1;
 
         while (loopNum > 0) {
             loopNum--;
@@ -81,23 +79,15 @@ public class JavaxImageProcessing {
                      * 每种格式RGB三原色的顺序可能不同，还可能包含alpha通道
                      * 这里以TYPE_3BYTE_BGR 为例
                      */
-                    int imageType = bufferedImage.getType();
-                    System.out.println("通道格式：" + imageType);
-                    if (imageType == BufferedImage.TYPE_3BYTE_BGR) {
-                        bufferImageUtil.getTYPE_3BYTE_BGR(bufferedImage);
-                    } else System.out.println("其他通道格式，暂时无法解析！");
+                    int type = bufferedImage.getType();
+                    System.out.println("通道格式：" + type);
+                    bufferImageUtil.getARGB(bufferedImage, type);
                 }
             } else {
                 try {
                     BufferedImage bufferedImage = bufferImageUtil.getBufferImage(file);
                     int type = bufferedImage.getType();
-                    if (type == BufferedImage.TYPE_3BYTE_BGR) {
-                        bufferImageUtil.getTYPE_3BYTE_BGR(bufferedImage);
-                    }
-                    else if(type == BufferedImage.TYPE_4BYTE_ABGR){
-                        bufferImageUtil.getTYPE_4BYTE_ABGR(bufferedImage);
-                    }
-                    else System.out.println("通道格式"+type+"，暂时无法解析！");
+                    bufferImageUtil.getARGB(bufferedImage, type);
 
                 } catch (IOException e) {
                     e.printStackTrace();

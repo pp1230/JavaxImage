@@ -7,8 +7,19 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 皮怀雨 2018-07-30
+ * BufferedImage转换为ARGB工具类
+ */
 public class BufferImageUtil {
 
+    /**
+     * 读取多图片文件格式中的每一张图片
+     * @param file 图片文件
+     * @param format 图片格式
+     * @return 每张图片的的BufferedImage
+     * @throws IOException
+     */
     public List<BufferedImage> getBufferImages(File file, String format) throws IOException {
         ImageReader reader = ImageIO.getImageReadersBySuffix(format).next();
         ImageInputStream in = ImageIO.createImageInputStream(file);
@@ -21,6 +32,12 @@ public class BufferImageUtil {
         return bufferedImages;
     }
 
+    /**
+     * 读取图片文件为BufferedImage
+     * @param file 图片文件
+     * @return
+     * @throws IOException
+     */
     public BufferedImage getBufferImage(File file) throws IOException{
         return ImageIO.read(file);
     }
@@ -59,7 +76,7 @@ public class BufferImageUtil {
     }
 
     /**
-     * ARGB类型
+     * ARGB类型，如PNG格式图片，包含透明度通道
      * 注意：类型名BGR和储存顺序相反，也就是说从低位开始存储
      * 但是Alpha在高位
      * @param bufferedImage
@@ -87,5 +104,36 @@ public class BufferImageUtil {
             }
         }
         return argb;
+    }
+
+    /**
+     * 获取RGB
+     * @param bufferedImage
+     * @return
+     */
+    public int[] getTYPE_BYTE_INDEXED(BufferedImage bufferedImage){
+        return getTYPE_3BYTE_BGR(bufferedImage);
+    }
+
+    /**
+     * 获取图片的RGB，若有Alpha则为ARGB
+     * @param bufferedImage
+     * @param type BufferedImage中包含的图片存储类型，共14种
+     * @return RGB或ARGB
+     */
+    public int[] getARGB(BufferedImage bufferedImage, int type){
+        if (type == BufferedImage.TYPE_3BYTE_BGR) {
+            return getTYPE_3BYTE_BGR(bufferedImage);
+        }
+        else if(type == BufferedImage.TYPE_4BYTE_ABGR){
+            return getTYPE_4BYTE_ABGR(bufferedImage);
+        }
+        else if(type == BufferedImage.TYPE_BYTE_INDEXED){
+            return getTYPE_BYTE_INDEXED(bufferedImage);
+        }
+        else {
+            System.out.println("通道格式" + type + "，暂时无法解析！");
+            return new int[4];
+        }
     }
 }
