@@ -38,8 +38,16 @@ public class BufferImageUtil {
      * @return
      * @throws IOException
      */
-    public BufferedImage getBufferImage(File file) throws IOException{
-        return ImageIO.read(file);
+    public BufferedImage getBufferImage(File file) throws IOException {
+        BufferedImage bufferedImage = null;
+        try {
+            bufferedImage = ImageIO.read(file);
+        }catch (IllegalArgumentException e){
+            if (file!=null)
+            System.out.println("异常图片: "+file.getAbsolutePath());
+            return bufferedImage;
+        }
+        return bufferedImage;
     }
 
     /**
@@ -118,10 +126,11 @@ public class BufferImageUtil {
     /**
      * 获取图片的RGB，若有Alpha则为ARGB
      * @param bufferedImage
-     * @param type BufferedImage中包含的图片存储类型，共14种
      * @return RGB或ARGB
      */
-    public int[] getARGB(BufferedImage bufferedImage, int type){
+    public int[] getARGB(BufferedImage bufferedImage){
+        int type = bufferedImage.getType();
+        //System.out.println("通道格式：" + type);
         if (type == BufferedImage.TYPE_3BYTE_BGR) {
             return getTYPE_3BYTE_BGR(bufferedImage);
         }
@@ -135,5 +144,27 @@ public class BufferImageUtil {
             System.out.println("通道格式" + type + "，暂时无法解析！");
             return new int[4];
         }
+    }
+
+    /**
+     * 返回多张图片的ARGB
+     * @param files
+     * @return 数组表示第n张图片的4个通道
+     */
+    public int[][] getARGBs(File[] files){
+        int n = files.length;
+        int [][] imagesRGB = new int[n][4];
+        int i=0;
+        for(File file : files) {
+            try {
+                BufferedImage bufferedImage = getBufferImage(file);
+                if(bufferedImage != null)
+                    imagesRGB[i] = getARGB(bufferedImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            i++;
+        }
+        return imagesRGB;
     }
 }
